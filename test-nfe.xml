@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe">
+  <NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+    <infNFe Id="NFe35200714200166000189550010000000001123456789">
+      <ide>
+        <nNF>1</nNF>
+        <mod>55</mod>
+      </ide>
+      <emit>
+        <CNPJ>14200166000189</CNPJ>
+        <xNome>Empresa Teste LTDA</xNome>
+        <IE>123456789</IE>
+      </emit>
+      <dest>
+        <CNPJ>11222333000144</CNPJ>
+        <xNome>Cliente Teste LTDA</xNome>
+      </dest>
+      <det nItem="1">
+        <prod>
+          <CFOP>5102</CFOP>
+        </prod>
+        <imposto>
+          <ICMS>
+            <ICMS00>
+              <CST>00</CST>
+            </ICMS00>
+          </ICMS>
+        </imposto>
+      </det>
+      <total>
+        <ICMSTot>
+          <vNF>1000.00</vNF>
+          <vICMS>100.00</vICMS>
+          <vPIS>50.00</vPIS>
+          <vCOFINS>25.00</vCOFINS>
+          <vIPI>75.00</vIPI>
+        </ICMSTot>
+      </total>
+      <transp>
+        <transporta>
+          <xNome>Transportadora Teste</xNome>
+        </transporta>
+        <veicTransp>
+          <placa>ABC1234</placa>
+        </veicTransp>
+        <vol>
+          <pesoLiq>100.500</pesoLiq>
+          <pesoBruto>120.750</pesoBruto>
+        </vol>
+      </transp>
+    </infNFe>
+  </NFe>
+</nfeProc>

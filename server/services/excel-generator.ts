@@ -66,11 +66,11 @@ export async function generateExcel(invoices: Invoice[]): Promise<Buffer> {
 
     // Format NF number and access key as text to prevent Excel modification
     const numeroNFCell = row.getCell('numeroNF');
-    numeroNFCell.value = { text: invoice.numeroNF };
+    numeroNFCell.value = invoice.numeroNF;
     numeroNFCell.numFmt = '@'; // Text format
 
     const chaveNFCell = row.getCell('chaveNF');
-    chaveNFCell.value = { text: invoice.chaveNF };
+    chaveNFCell.value = invoice.chaveNF;
     chaveNFCell.numFmt = '@'; // Text format
 
     // Format monetary values

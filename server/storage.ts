@@ -27,7 +27,10 @@ export class MemStorage implements IStorage {
     const batch: Batch = { 
       ...insertBatch, 
       id,
-      createdAt: new Date().toISOString()
+      createdAt: new Date().toISOString(),
+      status: insertBatch.status || "processing",
+      processedFiles: insertBatch.processedFiles || 0,
+      errorFiles: insertBatch.errorFiles || 0
     };
     this.batches.set(id, batch);
     return batch;
@@ -48,7 +51,29 @@ export class MemStorage implements IStorage {
 
   async createInvoice(insertInvoice: InsertInvoice): Promise<Invoice> {
     const id = randomUUID();
-    const invoice: Invoice = { ...insertInvoice, id };
+    const invoice: Invoice = { 
+      ...insertInvoice, 
+      id,
+      status: insertInvoice.status || "processed",
+      cfop: insertInvoice.cfop || null,
+      cst: insertInvoice.cst || null,
+      nomeEmitente: insertInvoice.nomeEmitente || null,
+      cnpjCpfEmitente: insertInvoice.cnpjCpfEmitente || null,
+      nomeDestinatario: insertInvoice.nomeDestinatario || null,
+      cnpjCpfDestinatario: insertInvoice.cnpjCpfDestinatario || null,
+      valorTotal: insertInvoice.valorTotal || null,
+      valorICMS: insertInvoice.valorICMS || null,
+      valorPIS: insertInvoice.valorPIS || null,
+      valorCOFINS: insertInvoice.valorCOFINS || null,
+      valorIPI: insertInvoice.valorIPI || null,
+      pesoLiquido: insertInvoice.pesoLiquido || null,
+      pesoBruto: insertInvoice.pesoBruto || null,
+      transportadora: insertInvoice.transportadora || null,
+      placaVeiculo: insertInvoice.placaVeiculo || null,
+      ieEmissor: insertInvoice.ieEmissor || null,
+      ieEmitente: insertInvoice.ieEmitente || null,
+      errorMessage: insertInvoice.errorMessage || null
+    };
     this.invoices.set(id, invoice);
     return invoice;
   }
