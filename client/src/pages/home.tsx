@@ -136,7 +136,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex justify-between items-center">
             <div className="text-sm text-muted-foreground">
-              © 2024 XML para Excel Converter. Desenvolvido com Express.js + React.
+              © 2025 XML para Excel.
             </div>
             <div className="flex space-x-4 text-sm text-muted-foreground">
               <a href="#" className="hover:text-primary transition-colors">Ajuda</a>
