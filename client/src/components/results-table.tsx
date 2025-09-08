@@ -6,13 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Download, CheckCircle, AlertTriangle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import type { Invoice, Batch } from "@shared/schema";
+import type { Invoice, Batch, ExcelTemplate } from "@shared/schema";
 
 interface ResultsTableProps {
   batchId: string;
+  template: ExcelTemplate;
 }
 
-export function ResultsTable({ batchId }: ResultsTableProps) {
+export function ResultsTable({ batchId, template }: ResultsTableProps) {
   const { toast } = useToast();
 
   const { data: batch } = useQuery<Batch>({
@@ -25,19 +26,21 @@ export function ResultsTable({ batchId }: ResultsTableProps) {
 
   const handleDownloadExcel = async () => {
     try {
-      const response = await apiRequest('GET', `/api/invoices/batch/${batchId}/excel`);
+      const response = await apiRequest('POST', `/api/invoices/batch/${batchId}/excel`, {
+        template: template
+      });
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.style.display = 'none';
       a.href = url;
-      a.download = `notas_fiscais_${batchId}.xlsx`;
+      a.download = `notas_fiscais_${template.name.replace(/[^a-zA-Z0-9]/g, '_')}_${batchId}.xlsx`;
       document.body.appendChild(a);
       a.click();
       window.URL.revokeObjectURL(url);
       toast({
         title: "Download iniciado",
-        description: "O arquivo Excel está sendo baixado.",
+        description: `Arquivo Excel personalizado (${template.name}) está sendo baixado.`,
       });
     } catch (error) {
       toast({

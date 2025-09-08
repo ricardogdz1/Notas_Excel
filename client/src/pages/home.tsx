@@ -2,13 +2,24 @@ import { useState } from "react";
 import { FileUpload } from "@/components/file-upload";
 import { ProcessingStatus } from "@/components/processing-status";
 import { ResultsTable } from "@/components/results-table";
+import { ExcelConfig } from "@/components/excel-config";
 import { Card, CardContent } from "@/components/ui/card";
 import { FileSpreadsheet, HelpCircle } from "lucide-react";
+import type { ExcelTemplate } from "@shared/schema";
+
+const defaultTemplate: ExcelTemplate = {
+  id: "default",
+  name: "Padrão",
+  description: "Template padrão com campos essenciais",
+  columns: [],
+  isDefault: true
+};
 
 export default function Home() {
   const [currentBatchId, setCurrentBatchId] = useState<string | null>(null);
   const [showProcessing, setShowProcessing] = useState(false);
   const [showResults, setShowResults] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<ExcelTemplate>(defaultTemplate);
 
   const handleUploadComplete = (batchId: string) => {
     setCurrentBatchId(batchId);
@@ -46,6 +57,12 @@ export default function Home() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Excel Configuration Section */}
+        <ExcelConfig 
+          selectedTemplate={selectedTemplate}
+          onTemplateChange={setSelectedTemplate}
+        />
+
         {/* Upload Section */}
         <FileUpload onUploadComplete={handleUploadComplete} />
 
@@ -59,7 +76,10 @@ export default function Home() {
 
         {/* Results Section */}
         {showResults && currentBatchId && (
-          <ResultsTable batchId={currentBatchId} />
+          <ResultsTable 
+            batchId={currentBatchId} 
+            template={selectedTemplate}
+          />
         )}
 
         {/* Column Mapping Info */}

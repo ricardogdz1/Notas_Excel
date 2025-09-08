@@ -78,7 +78,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Download Excel file
+  // Download Excel file with custom template
+  app.post("/api/invoices/batch/:batchId/excel", async (req, res) => {
+    try {
+      const invoices = await storage.getInvoicesByBatch(req.params.batchId);
+      const processedInvoices = invoices.filter(inv => inv.status === 'processed');
+      
+      if (processedInvoices.length === 0) {
+        return res.status(404).json({ message: "Nenhuma nota fiscal processada encontrada" });
+      }
+
+      const template = req.body.template;
+      const buffer = await generateExcel(processedInvoices, template);
+      
+      const filename = `notas_fiscais_${template?.name?.replace(/[^a-zA-Z0-9]/g, '_') || 'export'}_${req.params.batchId}.xlsx`;
+      
+      res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+      res.send(buffer);
+    } catch (error) {
+      console.error("Excel generation error:", error);
+      res.status(500).json({ message: "Erro ao gerar arquivo Excel" });
+    }
+  });
+
+  // Backwards compatibility - keep GET endpoint for default template
   app.get("/api/invoices/batch/:batchId/excel", async (req, res) => {
     try {
       const invoices = await storage.getInvoicesByBatch(req.params.batchId);
