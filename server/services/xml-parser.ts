@@ -74,6 +74,45 @@ export async function parseXMLFile(buffer: Buffer, fileName: string): Promise<Om
     // IE Emissor (same as IE Emitente in most cases)
     const ieEmissor = emit?.ie || "";
 
+    // Extract additional identification data
+    const dataEmissao = ide?.dhemi ? new Date(ide.dhemi).toLocaleDateString('pt-BR') : "";
+    const dataVencimento = ide?.dvenct || "";
+    const naturezaOperacao = ide?.natop || "";
+    const modelo = ide?.mod || "";
+    const serie = ide?.serie || "";
+    const finalidadeEmissao = ide?.finNFe || "";
+    const consumidorFinal = ide?.indFinal || "";
+    const presencaComprador = ide?.indPres || "";
+
+    // Extract emitter address
+    const enderEmit = emit?.ender;
+    const municipioEmitente = enderEmit?.xMun || "";
+    const ufEmitente = enderEmit?.UF || "";
+    const cepEmitente = enderEmit?.CEP || "";
+    const enderecoEmitente = enderEmit ? `${enderEmit.xLgr || ""} ${enderEmit.nro || ""} ${enderEmit.xBairro || ""}`.trim() : "";
+
+    // Extract recipient address
+    const enderDest = dest?.ender;
+    const municipioDestinatario = enderDest?.xMun || "";
+    const ufDestinatario = enderDest?.UF || "";
+    const cepDestinatario = enderDest?.CEP || "";
+    const enderecoDestinatario = enderDest ? `${enderDest.xLgr || ""} ${enderDest.nro || ""} ${enderDest.xBairro || ""}`.trim() : "";
+
+    // Extract additional totals
+    const valorFrete = total?.vFrete || "0";
+    const valorSeguro = total?.vSeg || "0";
+    const valorDesconto = total?.vDesc || "0";
+    const valorOutrasDespesas = total?.vOutro || "0";
+    const baseCalculoICMS = total?.vBC || "0";
+    const baseCalculoICMSST = total?.vBCST || "0";
+    const valorICMSST = total?.vST || "0";
+    const valorProdutos = total?.vProd || "0";
+
+    // Extract additional information
+    const infAdic = infNFe.infAdic;
+    const observacoes = infAdic?.infCpl || "";
+    const informacoesAdicionais = infAdic?.infAdFisco || "";
+
     return {
       numeroNF: numeroNF.toString(),
       chaveNF: chaveNF.toString(),
@@ -93,7 +132,34 @@ export async function parseXMLFile(buffer: Buffer, fileName: string): Promise<Om
       transportadora,
       placaVeiculo,
       ieEmissor,
-      ieEmitente
+      ieEmitente,
+      // Additional fields
+      dataEmissao,
+      dataVencimento,
+      naturezaOperacao,
+      modelo,
+      serie,
+      finalidadeEmissao,
+      consumidorFinal,
+      presencaComprador,
+      municipioEmitente,
+      ufEmitente,
+      cepEmitente,
+      enderecoEmitente,
+      municipioDestinatario,
+      ufDestinatario,
+      cepDestinatario,
+      enderecoDestinatario,
+      valorFrete: parseFloat(valorFrete.toString()).toFixed(2),
+      valorSeguro: parseFloat(valorSeguro.toString()).toFixed(2),
+      valorDesconto: parseFloat(valorDesconto.toString()).toFixed(2),
+      valorOutrasDespesas: parseFloat(valorOutrasDespesas.toString()).toFixed(2),
+      baseCalculoICMS: parseFloat(baseCalculoICMS.toString()).toFixed(2),
+      baseCalculoICMSST: parseFloat(baseCalculoICMSST.toString()).toFixed(2),
+      valorICMSST: parseFloat(valorICMSST.toString()).toFixed(2),
+      valorProdutos: parseFloat(valorProdutos.toString()).toFixed(2),
+      observacoes,
+      informacoesAdicionais
     };
 
   } catch (error) {
