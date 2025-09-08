@@ -11,7 +11,27 @@ const defaultTemplate: ExcelTemplate = {
   id: "default",
   name: "Padrão",
   description: "Template padrão com campos essenciais",
-  columns: [],
+  columns: [
+    { id: "numeroNF", label: "Número NF", key: "numeroNF", width: 15, format: "text", required: true },
+    { id: "chaveNF", label: "Chave NF", key: "chaveNF", width: 50, format: "text", required: true },
+    { id: "cfop", label: "CFOP", key: "cfop", width: 10, format: "text" },
+    { id: "cst", label: "CST", key: "cst", width: 10, format: "text" },
+    { id: "nomeEmitente", label: "Nome Emitente", key: "nomeEmitente", width: 30, format: "text" },
+    { id: "cnpjCpfEmitente", label: "CNPJ/CPF Emitente", key: "cnpjCpfEmitente", width: 20, format: "text" },
+    { id: "nomeDestinatario", label: "Nome Destinatário", key: "nomeDestinatario", width: 30, format: "text" },
+    { id: "cnpjCpfDestinatario", label: "CNPJ/CPF Destinatário", key: "cnpjCpfDestinatario", width: 20, format: "text" },
+    { id: "valorTotal", label: "Valor Total", key: "valorTotal", width: 15, format: "currency" },
+    { id: "valorICMS", label: "Valor ICMS", key: "valorICMS", width: 15, format: "currency" },
+    { id: "valorPIS", label: "Valor PIS", key: "valorPIS", width: 15, format: "currency" },
+    { id: "valorCOFINS", label: "Valor COFINS", key: "valorCOFINS", width: 15, format: "currency" },
+    { id: "valorIPI", label: "Valor IPI", key: "valorIPI", width: 15, format: "currency" },
+    { id: "pesoLiquido", label: "Peso Líquido", key: "pesoLiquido", width: 15, format: "number" },
+    { id: "pesoBruto", label: "Peso Bruto", key: "pesoBruto", width: 15, format: "number" },
+    { id: "transportadora", label: "Transportadora", key: "transportadora", width: 25, format: "text" },
+    { id: "placaVeiculo", label: "Placa Veículo", key: "placaVeiculo", width: 15, format: "text" },
+    { id: "ieEmissor", label: "IE Emissor", key: "ieEmissor", width: 20, format: "text" },
+    { id: "ieEmitente", label: "IE Emitente", key: "ieEmitente", width: 20, format: "text" }
+  ],
   isDefault: true
 };
 
