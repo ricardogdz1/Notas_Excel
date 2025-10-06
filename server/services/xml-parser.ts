@@ -12,7 +12,7 @@ export async function parseXMLFile(buffer: Buffer, fileName: string): Promise<Om
       trim: true
     });
 
-    // Navigate through the XML structure for Brazilian NFe
+    // Navegar pela estrutura XML da NFe brasileira
     const nfe = result?.nfeproc?.nfe || result?.nfe;
     if (!nfe) {
       throw new Error("Estrutura XML inválida: tag <NFe> não encontrada");
@@ -23,38 +23,38 @@ export async function parseXMLFile(buffer: Buffer, fileName: string): Promise<Om
       throw new Error("Estrutura XML inválida: tag <infNFe> não encontrada");
     }
 
-    // Extract identification data
+    // Extrair dados de identificação
     const ide = infNFe.ide;
     const numeroNF = ide?.nnf || "";
     const chaveNF = infNFe.id ? infNFe.id.replace("NFe", "") : "";
 
-    // Extract emitter data
+    // Extrair dados do emitente
     const emit = infNFe.emit;
     const nomeEmitente = emit?.xnome || "";
     const cnpjCpfEmitente = emit?.cnpj || emit?.cpf || "";
     const ieEmitente = emit?.ie || "";
 
-    // Extract recipient data
+    // Extrair dados do destinatário
     const dest = infNFe.dest;
     const nomeDestinatario = dest?.xnome || "";
     const cnpjCpfDestinatario = dest?.cnpj || dest?.cpf || "";
 
-    // Extract product data (get CFOP and CST from first item)
+    // Extrair dados do produto (obter CFOP e CST do primeiro item)
     const det = Array.isArray(infNFe.det) ? infNFe.det[0] : infNFe.det;
     const cfop = det?.prod?.cfop || "";
     
-    // Extract CST from ICMS
+    // Extrair CST do ICMS
     const icms = det?.imposto?.icms;
     let cst = "";
     if (icms) {
-      // CST can be in different ICMS scenarios (icms00, icms10, etc.)
+      // CST pode estar em diferentes cenários de ICMS (icms00, icms10, etc.)
       const icmsKeys = Object.keys(icms);
       if (icmsKeys.length > 0) {
         cst = icms[icmsKeys[0]]?.cst || icms[icmsKeys[0]]?.csosn || "";
       }
     }
 
-    // Extract totals
+    // Extrair totais
     const total = infNFe.total?.icmstot;
     const valorTotal = total?.vnf || "0";
     const valorICMS = total?.vicms || "0";
@@ -62,19 +62,19 @@ export async function parseXMLFile(buffer: Buffer, fileName: string): Promise<Om
     const valorCOFINS = total?.vcofins || "0";
     const valorIPI = total?.vipi || "0";
 
-    // Extract transport data
+    // Extrair dados de transporte
     const transp = infNFe.transp;
     const transportadora = transp?.transporta?.xnome || "";
     const placaVeiculo = transp?.veictransp?.placa || "";
     
-    // Extract weights
+    // Extrair pesos
     const pesoLiquido = transp?.vol?.pesoliq || "0";
     const pesoBruto = transp?.vol?.pesobruto || "0";
 
-    // IE Emissor (same as IE Emitente in most cases)
+    // IE Emissor (geralmente igual ao IE Emitente)
     const ieEmissor = emit?.ie || "";
 
-    // Extract additional identification data
+    // Extrair dados adicionais de identificação
     const dataEmissao = ide?.dhemi ? new Date(ide.dhemi).toLocaleDateString('pt-BR') : "";
     const dataVencimento = ide?.dvenct || "";
     const naturezaOperacao = ide?.natop || "";
@@ -84,21 +84,21 @@ export async function parseXMLFile(buffer: Buffer, fileName: string): Promise<Om
     const consumidorFinal = ide?.indFinal || "";
     const presencaComprador = ide?.indPres || "";
 
-    // Extract emitter address
+    // Extrair endereço do emitente
     const enderEmit = emit?.ender;
     const municipioEmitente = enderEmit?.xMun || "";
     const ufEmitente = enderEmit?.UF || "";
     const cepEmitente = enderEmit?.CEP || "";
     const enderecoEmitente = enderEmit ? `${enderEmit.xLgr || ""} ${enderEmit.nro || ""} ${enderEmit.xBairro || ""}`.trim() : "";
 
-    // Extract recipient address
+    // Extrair endereço do destinatário
     const enderDest = dest?.ender;
     const municipioDestinatario = enderDest?.xMun || "";
     const ufDestinatario = enderDest?.UF || "";
     const cepDestinatario = enderDest?.CEP || "";
     const enderecoDestinatario = enderDest ? `${enderDest.xLgr || ""} ${enderDest.nro || ""} ${enderDest.xBairro || ""}`.trim() : "";
 
-    // Extract additional totals
+    // Extrair totais adicionais
     const valorFrete = total?.vFrete || "0";
     const valorSeguro = total?.vSeg || "0";
     const valorDesconto = total?.vDesc || "0";
@@ -108,7 +108,7 @@ export async function parseXMLFile(buffer: Buffer, fileName: string): Promise<Om
     const valorICMSST = total?.vST || "0";
     const valorProdutos = total?.vProd || "0";
 
-    // Extract additional information
+    // Extrair informações adicionais
     const infAdic = infNFe.infAdic;
     const observacoes = infAdic?.infCpl || "";
     const informacoesAdicionais = infAdic?.infAdFisco || "";
@@ -133,7 +133,7 @@ export async function parseXMLFile(buffer: Buffer, fileName: string): Promise<Om
       placaVeiculo,
       ieEmissor,
       ieEmitente,
-      // Additional fields
+      // Campos adicionais
       dataEmissao,
       dataVencimento,
       naturezaOperacao,
