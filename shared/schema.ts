@@ -75,7 +75,7 @@ export const insertBatchSchema = createInsertSchema(batches).omit({
   createdAt: true,
 });
 
-// Column configuration types
+// Configuracoes de coluna
 export interface ExcelColumn {
   id: string;
   label: string;
@@ -97,9 +97,9 @@ export const excelTemplates = pgTable("excel_templates", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   name: text("name").notNull(),
   description: text("description"),
-  columns: text("columns").notNull(), // JSON string of ExcelColumn[]
+  columns: text("columns").notNull(), // JSON string de ExcelColumn[]
   isDefault: text("is_default").default("false"),
-  userId: text("user_id"), // For future user management
+  userId: text("user_id"), // Para gerenciamento futuro de usuários
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
