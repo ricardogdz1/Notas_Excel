@@ -2,12 +2,12 @@ import { type Invoice, type InsertInvoice, type Batch, type InsertBatch } from "
 import { randomUUID } from "crypto";
 
 export interface IStorage {
-  // Batch operations
+  // Operações de lote
   createBatch(batch: InsertBatch): Promise<Batch>;
   getBatch(id: string): Promise<Batch | undefined>;
   updateBatch(id: string, updates: Partial<Batch>): Promise<Batch | undefined>;
   
-  // Invoice operations
+  // Operações de nota fiscal
   createInvoice(invoice: InsertInvoice): Promise<Invoice>;
   getInvoicesByBatch(batchId: string): Promise<Invoice[]>;
   updateInvoice(id: string, updates: Partial<Invoice>): Promise<Invoice | undefined>;
