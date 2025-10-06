@@ -1,7 +1,7 @@
 import ExcelJS from "exceljs";
 import type { Invoice, ExcelTemplate, ExcelColumn } from "@shared/schema";
 
-// Default template for backward compatibility
+// Template padrão para compatibilidade retroativa
 const defaultColumns: ExcelColumn[] = [
   { id: "numeroNF", label: "Número NF", key: "numeroNF", width: 15, format: "text" },
   { id: "chaveNF", label: "Chave NF", key: "chaveNF", width: 50, format: "text" },
@@ -29,10 +29,10 @@ export async function generateExcel(invoices: Invoice[], template?: ExcelTemplat
   const worksheetName = template?.name ? `${template.name} - Notas Fiscais` : 'Notas Fiscais';
   const worksheet = workbook.addWorksheet(worksheetName.substring(0, 30)); // Excel worksheet name limit
 
-  // Use template columns or default columns
+  // Usar colunas do template ou colunas padrão
   const columnsToUse = template?.columns && template.columns.length > 0 ? template.columns : defaultColumns;
   
-  // Convert to ExcelJS format
+  // Converter para formato ExcelJS
   const excelColumns = columnsToUse.map(col => ({
     header: col.label,
     key: col.key,
@@ -41,19 +41,19 @@ export async function generateExcel(invoices: Invoice[], template?: ExcelTemplat
 
   worksheet.columns = excelColumns;
 
-  // Style the header row
+  // Estilizar linha de cabeçalho
   const headerRow = worksheet.getRow(1);
   headerRow.font = { bold: true, color: { argb: 'FFFFFF' } };
   headerRow.fill = {
     type: 'pattern',
     pattern: 'solid',
-    fgColor: { argb: '22C55E' } // Green color matching the theme
+    fgColor: { argb: '22C55E' } // Cor verde correspondente ao tema
   };
   headerRow.alignment = { horizontal: 'center', vertical: 'middle' };
 
-  // Add data rows
+  // Adicionar linhas de dados
   invoices.forEach((invoice) => {
-    // Create row data based on selected columns
+    //  Criar dados de linha baseado nas colunas selecionadas
     const rowData: any = {};
     columnsToUse.forEach(col => {
       const value = invoice[col.key];
@@ -66,17 +66,17 @@ export async function generateExcel(invoices: Invoice[], template?: ExcelTemplat
 
     const row = worksheet.addRow(rowData);
 
-    // Apply formatting based on column configuration
+    // Aplicar formatação baseada na configuração da coluna
     columnsToUse.forEach(col => {
       const cell = row.getCell(col.key);
       
-      // Handle special text formatting for important fields
+      // Manipular formatação de texto especial para campos importantes
       if (col.key === 'numeroNF' || col.key === 'chaveNF') {
         cell.value = invoice[col.key];
-        cell.numFmt = '@'; // Text format
+        cell.numFmt = '@'; // Formato de texto
       }
       
-      // Apply format based on column type
+      // Aplicar formato baseado no tipo de coluna
       switch (col.format) {
         case 'currency':
           cell.numFmt = 'R$ #,##0.00';
@@ -95,11 +95,11 @@ export async function generateExcel(invoices: Invoice[], template?: ExcelTemplat
           break;
         case 'text':
         default:
-          // Keep as is
+          // Manter como está
           break;
       }
       
-      // Add borders and alignment
+      // Adicionar bordas e alinhamento
       cell.border = {
         top: { style: 'thin' },
         left: { style: 'thin' },
@@ -110,7 +110,7 @@ export async function generateExcel(invoices: Invoice[], template?: ExcelTemplat
     });
   });
 
-  // Auto-fit columns based on template configuration or content
+  // Ajustar colunas automaticamente baseado na configuração do template ou conteúdo
   worksheet.columns.forEach((column, index) => {
     const templateColumn = columnsToUse[index];
     if (templateColumn?.width) {
@@ -127,7 +127,7 @@ export async function generateExcel(invoices: Invoice[], template?: ExcelTemplat
     }
   });
 
-  // Generate buffer
+  // Gerar buffer
   const buffer = await workbook.xlsx.writeBuffer();
   return Buffer.from(buffer);
 }
