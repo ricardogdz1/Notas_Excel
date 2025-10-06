@@ -10,14 +10,14 @@ import { insertBatchSchema } from "@shared/schema";
 const upload = multer({ 
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB per file
-    files: 50 // Maximum 50 files
+    fileSize: 10 * 1024 * 1024, // 10MB por arquivo
+    files: 50 // Maximo de 50 arquivos
   }
 });
 
 export async function registerRoutes(app: Express): Promise<Server> {
   
-  // Upload XML files and create batch
+  // Upload de arquivos XML e criação de lote
   app.post("/api/upload", upload.array('files', 50), async (req, res) => {
     try {
       const files = req.files as Express.Multer.File[];
@@ -26,7 +26,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Nenhum arquivo enviado" });
       }
 
-      // Validate file types
+      // Validar tipos de arquivo
       const invalidFiles = files.filter(file => !file.originalname.toLowerCase().endsWith('.xml'));
       if (invalidFiles.length > 0) {
         return res.status(400).json({ 
@@ -35,7 +35,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
-      // Create batch
+      // Criar lote
       const batch = await storage.createBatch({
         status: "processing",
         totalFiles: files.length,
@@ -43,7 +43,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         errorFiles: 0
       });
 
-      // Process files asynchronously
+      // Processar arquivos de forma assíncrona
       processFilesAsync(batch.id, files);
 
       res.json({ batchId: batch.id });
@@ -53,7 +53,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get batch status
+  // Obter status do lote
   app.get("/api/batches/:id", async (req, res) => {
     try {
       const batch = await storage.getBatch(req.params.id);
@@ -67,7 +67,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get invoices by batch
+  // Obter notas fiscais por lote
   app.get("/api/invoices/batch/:batchId", async (req, res) => {
     try {
       const invoices = await storage.getInvoicesByBatch(req.params.batchId);
@@ -78,7 +78,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Download Excel file with custom template
+  // Baixar arquivo Excel com template customizado
   app.post("/api/invoices/batch/:batchId/excel", async (req, res) => {
     try {
       const invoices = await storage.getInvoicesByBatch(req.params.batchId);
@@ -102,7 +102,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Backwards compatibility - keep GET endpoint for default template
+  // Compatibilidade retroativa - manter endpoint GET para template padrão
   app.get("/api/invoices/batch/:batchId/excel", async (req, res) => {
     try {
       const invoices = await storage.getInvoicesByBatch(req.params.batchId);
@@ -127,7 +127,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   return httpServer;
 }
 
-// Async file processing function
+// Função de processamento assincrona de lotes
 async function processFilesAsync(batchId: string, files: Express.Multer.File[]) {
   let processedCount = 0;
   let errorCount = 0;
@@ -155,14 +155,14 @@ async function processFilesAsync(batchId: string, files: Express.Multer.File[]) 
       errorCount++;
     }
 
-    // Update batch progress
+    // Progesso de upload de lotes
     await storage.updateBatch(batchId, {
       processedFiles: processedCount,
       errorFiles: errorCount
     });
   }
 
-  // Mark batch as completed
+  // Marcação de lote como completo
   await storage.updateBatch(batchId, {
     status: "completed"
   });
